@@ -40,6 +40,9 @@ public class UserController {
         return service.createUser(userDto);
     }
 
-    
+    @DeleteMapping("/{id}")
+    public void deleteUserById(@PathVariable Integer id){
+        service.deleteUserById(id);
+    }
 
 }

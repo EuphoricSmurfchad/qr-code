@@ -54,4 +54,9 @@ public class UserService {
         return savedUser.getId();
     }
 
+    @Transactional 
+    public void deleteUserById(Integer id){
+        userRepository.deleteById(id);
+    }
+
 }
