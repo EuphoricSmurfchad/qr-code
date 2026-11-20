@@ -29,7 +29,7 @@ public class UserController {
         this.service = service;
     }
 
-    @PostMapping("/{qr}")
+    @PostMapping("/enter/{qr}")
     public UserDto findByQr(@PathVariable UUID qr) {
         return service.findByQr(qr);
     }
@@ -44,5 +44,11 @@ public class UserController {
     public void deleteUserById(@PathVariable Integer id){
         service.deleteUserById(id);
     }
+
+    @PutMapping("/{id}")
+    public UserDto updateUser(@PathVariable Integer id, @RequestBody UserDto userDto) {
+        return service.updateUser(id, userDto);
+    }
+
 
 }
