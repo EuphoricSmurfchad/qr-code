@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import java.util.UUID;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -29,10 +31,19 @@ public class QrService {
     @Transactional
     public UserDto createNewQrForUser(Integer id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                        "Пользователь с ID " + id + " не найден"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Пользователь с ID " + id + " не найден"));
         Qr qr = new Qr();
         user.addQr(qr);
+        User savedUser = userRepository.saveAndFlush(user);
+        return mapper.toUserDto(savedUser);
+    }
+
+    @Transactional
+    public UserDto deleteQrForUser(UUID uuid) {
+        Qr qr = qrRepository.findById(uuid)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Qr-код не найден"));
+        User user = qr.getUser();
+        user.removeQr(qr);
         User savedUser = userRepository.saveAndFlush(user);
         return mapper.toUserDto(savedUser);
     }

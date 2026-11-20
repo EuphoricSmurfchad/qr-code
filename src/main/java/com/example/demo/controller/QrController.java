@@ -6,9 +6,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.dto.UserDto;
 import com.example.demo.service.QrService;
 
+import java.util.UUID;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/api/qr")
@@ -26,4 +28,9 @@ public class QrController {
         return service.createNewQrForUser(id);
     }
 
+    @DeleteMapping("/{qr}")
+    public UserDto deleteQrForUser(@PathVariable UUID qr) {
+
+        return service.deleteQrForUser(qr);
+    }
 }
