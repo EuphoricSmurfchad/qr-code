@@ -50,5 +50,11 @@ public class UserController {
         return service.updateUser(id, userDto);
     }
 
+    @GetMapping("/{id}")
+    public UserDto getUser(@PathVariable Integer id) {
+        return service.getUser(id);
+    }
+        
+
 
 }

@@ -1,13 +1,10 @@
 package com.example.demo.service;
 
-import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.boot.webmvc.autoconfigure.WebMvcProperties.Apiversion.Use;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.example.demo.dto.DtoMapper;
@@ -63,15 +60,24 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    @Transactional 
-    public UserDto updateUser(Integer id, UserDto userDto){
+    @Transactional
+    public UserDto updateUser(Integer id, UserDto userDto) {
         User user = userRepository.findById(id)
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Пользователь с ID " + id + " не найден"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Пользователь с ID " + id + " не найден"));
         user.setFirstName(userDto.firstName());
         user.setLastName(userDto.lastName());
         user.setMiddleName(userDto.middleName());
         User savedUser = userRepository.save(user);
         return mapper.toUserDto(savedUser);
+    }
+
+    @Transactional
+    public UserDto getUser(Integer id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Пользователь с ID " + id + " не найден"));
+        return mapper.toUserDto(user);
     }
 
 }
