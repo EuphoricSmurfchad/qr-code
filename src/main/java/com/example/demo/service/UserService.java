@@ -44,8 +44,8 @@ public class UserService {
 
     }
 
-    @Transactional 
-    public Integer createUser(UserDto userDto){
+    @Transactional
+    public Integer createUser(UserDto userDto) {
         User user = mapper.toUser(userDto);
         Qr qr = new Qr();
         user.addQr(qr);
@@ -54,8 +54,11 @@ public class UserService {
         return savedUser.getId();
     }
 
-    @Transactional 
-    public void deleteUserById(Integer id){
+    @Transactional
+    public void deleteUserById(Integer id) {
+        if (!userRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Пользователь с ID " + id + " не найден");
+        }
         userRepository.deleteById(id);
     }
 
