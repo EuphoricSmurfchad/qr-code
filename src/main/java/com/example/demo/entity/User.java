@@ -65,6 +65,10 @@ public class User {
         this.lastName = lastName;
     }
 
+    public Integer getId() {
+        return id;
+    }
+
     public void addQr(Qr qr){
         qrCodes.add(qr);
         qr.setUser(this);

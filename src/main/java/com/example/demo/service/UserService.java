@@ -45,11 +45,13 @@ public class UserService {
     }
 
     @Transactional 
-    public void createUser(UserDto userDto){
+    public Integer createUser(UserDto userDto){
         User user = mapper.toUser(userDto);
         Qr qr = new Qr();
         user.addQr(qr);
         qr.setUser(user);
-        userRepository.saveAndFlush(user);
+        User savedUser = userRepository.saveAndFlush(user);
+        return savedUser.getId();
     }
+
 }
