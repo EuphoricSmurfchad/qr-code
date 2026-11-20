@@ -3,6 +3,7 @@ package com.example.demo.service;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.boot.webmvc.autoconfigure.WebMvcProperties.Apiversion.Use;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
@@ -41,5 +42,14 @@ public class UserService {
         userRepository.saveAndFlush(user);
         return mapper.toUserDto(user);
 
+    }
+
+    @Transactional 
+    public void createUser(UserDto userDto){
+        User user = mapper.toUser(userDto);
+        Qr qr = new Qr();
+        user.addQr(qr);
+        qr.setUser(user);
+        userRepository.saveAndFlush(user);
     }
 }
