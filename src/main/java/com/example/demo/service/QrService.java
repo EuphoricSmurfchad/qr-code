@@ -2,50 +2,51 @@ package com.example.demo.service;
 
 import java.util.UUID;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
-import com.example.demo.dto.DtoMapper;
-import com.example.demo.dto.UserDto;
+import com.example.demo.dto.UserMapper;
+import com.example.demo.dto.ReturnUserDto;
 import com.example.demo.entity.Qr;
 import com.example.demo.entity.User;
+import com.example.demo.exception.QrNotFoundException;
+import com.example.demo.exception.UserNotFoundException;
 import com.example.demo.repository.QrRepository;
 import com.example.demo.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
+@AllArgsConstructor
 public class QrService {
 
     private final QrRepository qrRepository;
     private final UserRepository userRepository;
-    private final DtoMapper mapper;
-
-    public QrService(QrRepository qrRepository, UserRepository userRepository, DtoMapper mapper) {
-        this.qrRepository = qrRepository;
-        this.userRepository = userRepository;
-        this.mapper = mapper;
-    }
+    private final UserMapper mapper;
 
     @Transactional
-    public UserDto createNewQrForUser(Integer id) {
+    public ReturnUserDto createNewQrForUser(Integer id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Пользователь с ID " + id + " не найден"));
+                .orElseThrow(() -> new UserNotFoundException("Пользователь с ID " + id + " не найден"));
         Qr qr = new Qr();
         user.addQr(qr);
-        User savedUser = userRepository.saveAndFlush(user);
-        return mapper.toUserDto(savedUser);
+        User savedUser = userRepository.save(user);
+        log.info("Создан новый QR для пользователя с ID: " + savedUser.getId());
+        return mapper.toReturnUserDto(savedUser);
     }
 
     @Transactional
-    public UserDto deleteQrForUser(UUID uuid) {
+    public void deleteQrForUser(UUID uuid) {
         Qr qr = qrRepository.findById(uuid)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Qr-код не найден"));
+                .orElseThrow(() -> new QrNotFoundException("Qr-код не найден"));
         User user = qr.getUser();
+        if (user == null) {
+            throw new UserNotFoundException("Пользователь не найден");
+        }
         user.removeQr(qr);
-        User savedUser = userRepository.saveAndFlush(user);
-        return mapper.toUserDto(savedUser);
+        User savedUser = userRepository.save(user);
+        log.info("Удален Qr" + uuid + "для пользователя с ID:" + savedUser.getId());
     }
-
 }

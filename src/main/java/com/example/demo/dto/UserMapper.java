@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import com.example.demo.entity.User;
 
 @Component
-public class DtoMapper {
+public class UserMapper {
     
     public UserDto toUserDto(User user) {
         return new UserDto(user.getLastName(), user.getFirstName(), user.getMiddleName());
@@ -17,5 +17,9 @@ public class DtoMapper {
         user.setFirstName(userDto.firstName());
         user.setMiddleName(userDto.middleName());
         return user;
+    }
+
+    public ReturnUserDto toReturnUserDto(User user){
+        return new ReturnUserDto(user.getId(), user.getLastName(), user.getFirstName(), user.getMiddleName());
     }
 }
